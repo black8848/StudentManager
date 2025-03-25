@@ -23,13 +23,13 @@ namespace StudentManagerNamespace
             get
             {
                 if (index < 0 || index >= Students.Count)
-                    throw new IndexOutOfRangeException("Invalid student index.");
+                    throw new IndexOutOfRangeException("无效的学生索引");
                 return Students[index];
             }
             set
             {
                 if (index < 0 || index >= Students.Count)
-                    throw new IndexOutOfRangeException("Invalid student index.");
+                    throw new IndexOutOfRangeException("无效的学生索引");
                 Students[index] = value;
             }
         }
@@ -49,12 +49,12 @@ namespace StudentManagerNamespace
             if (student != null)
             {
                 Students.Remove(student);
-                Console.WriteLine($"Student {id} removed.");
+                Console.WriteLine($"Student {id} 已被移除");
                 StudentChanged?.Invoke();//触发事件（通知所有订阅者）
             }
             else
             {
-                Console.WriteLine("Student not found.");
+                Console.WriteLine("学生不存在");
             }
         }
 
@@ -66,12 +66,12 @@ namespace StudentManagerNamespace
                 student.Name = name;
                 student.Age = age;
                 student.Grade = grade;
-                Console.WriteLine("Student updated successfully.");
+                Console.WriteLine("学生信息更新成功");
                 StudentChanged?.Invoke();//触发事件（通知所有订阅者）
             }
             else
             {
-                Console.WriteLine("Student not found.");
+                Console.WriteLine("学生不存在");
             }
         }
 
@@ -84,7 +84,7 @@ namespace StudentManagerNamespace
         {
             if (Students.Count == 0)
             {
-                Console.WriteLine("No students found.");
+                Console.WriteLine("学生不存在");
                 return;
             }
             foreach (Student student in Students)

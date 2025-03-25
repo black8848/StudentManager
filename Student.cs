@@ -17,7 +17,7 @@ namespace StudentNamespace
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Name cannot be empty.");
+                    throw new ArgumentException("姓名不能为空");
                 _name = value;
             }
         }
@@ -28,7 +28,7 @@ namespace StudentNamespace
             set
             {
                 if (value < 0 || value > 150)
-                    throw new ArgumentOutOfRangeException("Age must be between 0 and 150.");
+                    throw new ArgumentOutOfRangeException("年龄必须在 0 到 150 之间");
                 _age = value;
             }
         }
@@ -39,7 +39,7 @@ namespace StudentNamespace
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Grade cannot be empty.");
+                    throw new ArgumentException("成绩不能为空");
                 _grade = value;
             }
         }

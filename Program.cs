@@ -18,7 +18,7 @@ class Program
             Console.WriteLine("1：添加学生;2：更新学生信息；3：删除学生；4：打印所有学生；0：退出");
             if (!int.TryParse(Console.ReadLine(), out int choice) || choice < 0 || choice > 4)
             {
-                Console.WriteLine("Invalid input. Please enter a number between 0 and 4.");
+                Console.WriteLine("无效的输入，请输入数字0-4");
                 continue;
             }
 
@@ -29,17 +29,17 @@ class Program
                 case 1:
                     Student newStudent = new Student();
 
-                    Console.WriteLine("Please input new student ID:");
+                    Console.WriteLine("输入新学生的ID:");
                     if (!int.TryParse(Console.ReadLine(), out int newStudentID)) { Console.WriteLine("Invalid ID!"); continue; }
                     newStudent.ID = newStudentID;
-                    Console.WriteLine("Please input new  Name:");
+                    Console.WriteLine("输入新学生的姓名:");
                     string? nameinput = Console.ReadLine();
                     if (string.IsNullOrEmpty(nameinput)) { Console.WriteLine("Invalid Name!"); continue; }
                     newStudent.Name = nameinput;
-                    Console.WriteLine("Please input new student Age:");
+                    Console.WriteLine("输入新学生的年龄:");
                     if (!int.TryParse(Console.ReadLine(), out int newStudentAge)) { Console.WriteLine("Invalid Age!"); continue; }
                     newStudent.Age = newStudentAge;
-                    Console.WriteLine("Please input new student Grade:");
+                    Console.WriteLine("输入新学生的成绩:");
                     string? gradeinput = Console.ReadLine();
                     if (string.IsNullOrEmpty(gradeinput)) { Console.WriteLine("Invalid Grade!"); continue; }
                     newStudent.Grade = gradeinput;
@@ -47,10 +47,10 @@ class Program
                     studentManager.AddStudent(newStudent);
                     break;
                 case 2:
-                    Console.WriteLine("Please input update student ID:");
-                    if (!int.TryParse(Console.ReadLine(), out int updateId)) { Console.WriteLine("Invalid ID!"); continue; }
+                    Console.WriteLine("请输入学生ID:");
+                    if (!int.TryParse(Console.ReadLine(), out int updateId)) { Console.WriteLine("无效的ID"); continue; }
                     Student student = studentManager.GetStudents().Find(s => s.ID == updateId);
-                    if (student == null) { Console.WriteLine("Student not found!"); continue; }
+                    if (student == null) { Console.WriteLine("没有找到学生"); continue; }
                     int flagforupdate = 1;
 
                     while (flagforupdate != 0)
@@ -58,28 +58,28 @@ class Program
                         Console.WriteLine("1：更新学生姓名；2：更新学生年龄；3：更新学生成绩；0：退出");
                         if (!int.TryParse(Console.ReadLine(), out flagforupdate) || flagforupdate < 0 || flagforupdate > 3)
                         {
-                            Console.WriteLine("Invalid input. Please enter a number between 0 and 3.");
+                            Console.WriteLine("无效的输入，请输入数字0-3");
                             continue;
                         }
                         switch (flagforupdate)
                         {
                             case 1:
-                                Console.WriteLine("Please input update student Name:");
+                                Console.WriteLine("输入修改后的学生姓名:");
                                 student.Name = Console.ReadLine();
                                 studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
                                 break;
                             case 2:
-                                Console.WriteLine("Please input update student Age:");
+                                Console.WriteLine("输入修改后的学生年龄:");
                                 student.Age = int.Parse(Console.ReadLine());
                                 studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
                                 break;
                             case 3:
-                                Console.WriteLine("Please input update student Grade:");
+                                Console.WriteLine("输入修改后的学生成绩:");
                                 student.Grade = Console.ReadLine();
                                 studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
                                 break;
                             default:
-                                Console.WriteLine("OVER,EXIT");
+                                Console.WriteLine("更新系统已退出");
                                 flagforupdate = 0;
                                 break;
                         }
@@ -87,7 +87,7 @@ class Program
                     break;
                 case 3:
                     int removestudentID;
-                    Console.WriteLine("Please input remove student ID:");
+                    Console.WriteLine("输入要移除的学生ID");
                     removestudentID = int.Parse(Console.ReadLine());
                     studentManager.RemoveStudent(removestudentID);
                     break;
@@ -95,7 +95,7 @@ class Program
                     studentManager.PrintAllStudents();
                     break;
                 default:
-                    Console.WriteLine("OVER,EXIT");
+                    Console.WriteLine("系统已退出");
                     choice = 0;
                     break;
             }
