@@ -1,16 +1,23 @@
 ﻿using StudentNamespace;
 using System;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 
 namespace StudentManagerNamespace
 {
-    public class StudentManager {
+    public class StudentManager
+    {
+        private const string FilePath = "students.json";
         private List<Student> Students = new List<Student>();
-        public StudentManager() { }
+        public StudentManager()
+        {
+            Students = LoadStudents(); 
+        }
 
         public void AddStudent(Student student)
         {
             Students.Add(student);
+            SaveStudents();
         }
 
         public void RemoveStudent(int id)
@@ -19,6 +26,7 @@ namespace StudentManagerNamespace
             if (student != null)
             {
                 Students.Remove(student);
+                SaveStudents();
                 Console.WriteLine($"Student {id} removed.");
             }
             else
@@ -35,6 +43,7 @@ namespace StudentManagerNamespace
                 student.Name = name;
                 student.Age = age;
                 student.Grade = grade;
+                SaveStudents();
                 Console.WriteLine("Student updated successfully.");
             }
             else
@@ -59,6 +68,22 @@ namespace StudentManagerNamespace
             {
                 Console.WriteLine($"ID: {student.ID}, Name: {student.Name}, Age: {student.Age}, Grade: {student.Grade}");
             }
+        }
+
+        private void SaveStudents()
+        {
+            string json = JsonSerializer.Serialize(Students, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(FilePath, json);
+        }
+
+        private List<Student> LoadStudents()
+        {
+            if (File.Exists(FilePath))
+            {
+                string json = File.ReadAllText(FilePath);
+                return JsonSerializer.Deserialize<List<Student>>(json) ?? new List<Student>();
+            }
+            return new List<Student>();
         }
 
     }
