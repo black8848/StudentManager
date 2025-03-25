@@ -6,64 +6,71 @@ class Program
 {
     static void Main(string[] args)
     {
-        int flag = 1;
         StudentManager studentManager = new StudentManager();
-        while (flag != 0)
+        while (true)
         {
-            Console.WriteLine("1：添加学生；2：更新学生信息；3：删除学生；4：打印所有学生；其他数字：退出");
-            if (!int.TryParse(Console.ReadLine(), out flag))
+            Console.WriteLine("1：添加学生;2：更新学生信息；3：删除学生；4：打印所有学生；0：退出");
+            if (!int.TryParse(Console.ReadLine(), out int choice) || choice < 0 || choice > 4)
             {
-                Console.WriteLine("ERROR INPUT,EXIT");
-                flag = 0;
+                Console.WriteLine("Invalid input. Please enter a number between 0 and 4.");
+                continue;
             }
 
-            switch (flag)
+            if (choice == 0) break;
+
+            switch (choice)
             {
                 case 1:
-                    Student addstudent = new Student();
+                    Student newStudent = new Student();
 
                     Console.WriteLine("Please input new student ID:");
-                    addstudent.ID = int.Parse(Console.ReadLine());
+                    if (!int.TryParse(Console.ReadLine(), out int newStudentID)) { Console.WriteLine("Invalid ID!"); continue; }
+                    newStudent.ID = newStudentID;
                     Console.WriteLine("Please input new  Name:");
-                    addstudent.Name = Console.ReadLine();
+                    string? nameinput = Console.ReadLine();
+                    if (string.IsNullOrEmpty(nameinput)) { Console.WriteLine("Invalid Name!"); continue; }
+                    newStudent.Name = nameinput;
                     Console.WriteLine("Please input new student Age:");
-                    addstudent.Age = int.Parse(Console.ReadLine());
+                    if (!int.TryParse(Console.ReadLine(), out int newStudentAge)) { Console.WriteLine("Invalid Age!"); continue; }
+                    newStudent.Age = newStudentAge;
                     Console.WriteLine("Please input new student Grade:");
-                    addstudent.Grade = Console.ReadLine();
+                    string? gradeinput = Console.ReadLine();
+                    if (string.IsNullOrEmpty(gradeinput)) { Console.WriteLine("Invalid Grade!"); continue; }
+                    newStudent.Grade = gradeinput;
 
-                    studentManager.AddStudent(addstudent);
+                    studentManager.AddStudent(newStudent);
                     break;
                 case 2:
-                    int updatestudentID;
                     Console.WriteLine("Please input update student ID:");
-                    updatestudentID = int.Parse(Console.ReadLine());
-                    Student curruntstudent = studentManager.Students.Find(s => s.ID == updatestudentID);
+                    if (!int.TryParse(Console.ReadLine(), out int updateId)) { Console.WriteLine("Invalid ID!"); continue; }
+                    Student student = studentManager.GetStudents().Find(s => s.ID == updateId);
+                    if (student == null) { Console.WriteLine("Student not found!"); continue; }
                     int flagforupdate = 1;
 
                     while (flagforupdate != 0)
                     {
-                        Console.WriteLine("1：更新学生姓名；2：更新学生年龄；3：更新学生成绩；其他数字：退出");
-                        if (!int.TryParse(Console.ReadLine(), out flagforupdate))
+                        Console.WriteLine("1：更新学生姓名；2：更新学生年龄；3：更新学生成绩；0：退出");
+                        if (!int.TryParse(Console.ReadLine(), out flagforupdate) || flagforupdate < 0 || flagforupdate > 3)
                         {
-                            Console.WriteLine("ERROR INPUT,EXIT");
-                            flagforupdate = 0;
+                            Console.WriteLine("Invalid input. Please enter a number between 0 and 3.");
+                            continue;
                         }
                         switch (flagforupdate)
                         {
                             case 1:
                                 Console.WriteLine("Please input update student Name:");
-                                curruntstudent.Name = Console.ReadLine();
-                                studentManager.UpdateStudent(updatestudentID, curruntstudent);
+                                student.Name = Console.ReadLine();
+                                studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
                                 break;
                             case 2:
                                 Console.WriteLine("Please input update student Age:");
-                                curruntstudent.Age = int.Parse(Console.ReadLine());
-                                studentManager.UpdateStudent(updatestudentID, curruntstudent);
+                                student.Age = int.Parse(Console.ReadLine());
+                                studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
                                 break;
                             case 3:
                                 Console.WriteLine("Please input update student Grade:");
-                                curruntstudent.Grade = Console.ReadLine();
-                                studentManager.UpdateStudent(updatestudentID, curruntstudent);
+                                student.Grade = Console.ReadLine();
+                                studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
                                 break;
                             default:
                                 Console.WriteLine("OVER,EXIT");
@@ -83,7 +90,7 @@ class Program
                     break;
                 default:
                     Console.WriteLine("OVER,EXIT");
-                    flag = 0;
+                    choice = 0;
                     break;
             }
         }

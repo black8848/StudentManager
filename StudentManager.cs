@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace StudentManagerNamespace
 {
     public class StudentManager {
-        public List<Student> Students = new List<Student>();
+        private List<Student> Students = new List<Student>();
         public StudentManager() { }
 
         public void AddStudent(Student student)
@@ -19,6 +19,7 @@ namespace StudentManagerNamespace
             if (student != null)
             {
                 Students.Remove(student);
+                Console.WriteLine($"Student {id} removed.");
             }
             else
             {
@@ -26,14 +27,15 @@ namespace StudentManagerNamespace
             }
         }
 
-        public void UpdateStudent(int id, Student newStudent)
+        public void UpdateStudent(int id, string name, int age, string grade)
         {
             Student student = Students.Find(s => s.ID == id);
             if (student != null)
             {
-                student.Name = newStudent.Name;
-                student.Age = newStudent.Age;
-                student.Grade = newStudent.Grade;
+                student.Name = name;
+                student.Age = age;
+                student.Grade = grade;
+                Console.WriteLine("Student updated successfully.");
             }
             else
             {
@@ -41,8 +43,18 @@ namespace StudentManagerNamespace
             }
         }
 
+        public List<Student> GetStudents()
+        {
+            return Students;
+        }
+
         public void PrintAllStudents()
         {
+            if (Students.Count == 0)
+            {
+                Console.WriteLine("No students found.");
+                return;
+            }
             foreach (Student student in Students)
             {
                 Console.WriteLine($"ID: {student.ID}, Name: {student.Name}, Age: {student.Age}, Grade: {student.Grade}");
