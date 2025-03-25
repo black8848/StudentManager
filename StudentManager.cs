@@ -9,15 +9,35 @@ namespace StudentManagerNamespace
     {
         private const string FilePath = "students.json";
         private List<Student> Students = new List<Student>();
+        public delegate void StudentAddedHandler(Student student); //定义委托
+        public event StudentAddedHandler StudentAdded;  //定义事件
+
+        public Student this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= Students.Count)
+                    throw new IndexOutOfRangeException("Invalid student index.");
+                return Students[index];
+            }
+            set
+            {
+                if (index < 0 || index >= Students.Count)
+                    throw new IndexOutOfRangeException("Invalid student index.");
+                Students[index] = value;
+            }
+        }
+
         public StudentManager()
         {
-            Students = LoadStudents(); 
+            Students = LoadStudents();
         }
 
         public void AddStudent(Student student)
         {
             Students.Add(student);
             SaveStudents();
+            StudentAdded?.Invoke(student);  //触发事件（通知所有订阅者）
         }
 
         public void RemoveStudent(int id)

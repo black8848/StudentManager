@@ -7,6 +7,9 @@ class Program
     static void Main(string[] args)
     {
         StudentManager studentManager = new StudentManager();
+
+        studentManager.StudentAdded += OnStudentAdded;  // 订阅 StudentAdded 事件
+
         while (true)
         {
             Console.WriteLine("1：添加学生;2：更新学生信息；3：删除学生；4：打印所有学生；0：退出");
@@ -95,4 +98,10 @@ class Program
             }
         }
     }
+
+    static void OnStudentAdded(Student student) // 事件回调方法
+    {
+        Console.WriteLine($"新学生已添加: {student.Name}, ID: {student.ID}");
+    }
+
 }
