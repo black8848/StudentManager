@@ -4,13 +4,11 @@ using StudentManagerNamespace;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         StudentManager studentManager = new StudentManager();
 
         studentManager.StudentAdded += OnStudentAdded;  // 订阅 StudentAdded 事件
-
-        studentManager.StudentChanged += studentManager.SaveToJsonAsync;
 
         while (true)
         {
@@ -26,69 +24,13 @@ class Program
             switch (choice)
             {
                 case 1:
-                    Student newStudent = new Student();
-
-                    Console.WriteLine("输入新学生的ID:");
-                    if (!int.TryParse(Console.ReadLine(), out int newStudentID)) { Console.WriteLine("Invalid ID!"); continue; }
-                    newStudent.ID = newStudentID;
-                    Console.WriteLine("输入新学生的姓名:");
-                    string? nameinput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(nameinput)) { Console.WriteLine("Invalid Name!"); continue; }
-                    newStudent.Name = nameinput;
-                    Console.WriteLine("输入新学生的年龄:");
-                    if (!int.TryParse(Console.ReadLine(), out int newStudentAge)) { Console.WriteLine("Invalid Age!"); continue; }
-                    newStudent.Age = newStudentAge;
-                    Console.WriteLine("输入新学生的成绩:");
-                    string? gradeinput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(gradeinput)) { Console.WriteLine("Invalid Grade!"); continue; }
-                    newStudent.Grade = gradeinput;
-
-                    studentManager.AddStudent(newStudent);
+                    AddStudent(studentManager);
                     break;
                 case 2:
-                    Console.WriteLine("请输入学生ID:");
-                    if (!int.TryParse(Console.ReadLine(), out int updateId)) { Console.WriteLine("无效的ID"); continue; }
-                    Student student = studentManager.GetStudents().Find(s => s.ID == updateId);
-                    if (student == null) { Console.WriteLine("没有找到学生"); continue; }
-                    int flagforupdate = 1;
-
-                    while (flagforupdate != 0)
-                    {
-                        Console.WriteLine("1：更新学生姓名；2：更新学生年龄；3：更新学生成绩；0：退出");
-                        if (!int.TryParse(Console.ReadLine(), out flagforupdate) || flagforupdate < 0 || flagforupdate > 3)
-                        {
-                            Console.WriteLine("无效的输入，请输入数字0-3");
-                            continue;
-                        }
-                        switch (flagforupdate)
-                        {
-                            case 1:
-                                Console.WriteLine("输入修改后的学生姓名:");
-                                student.Name = Console.ReadLine();
-                                studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
-                                break;
-                            case 2:
-                                Console.WriteLine("输入修改后的学生年龄:");
-                                student.Age = int.Parse(Console.ReadLine());
-                                studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
-                                break;
-                            case 3:
-                                Console.WriteLine("输入修改后的学生成绩:");
-                                student.Grade = Console.ReadLine();
-                                studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
-                                break;
-                            default:
-                                Console.WriteLine("更新系统已退出");
-                                flagforupdate = 0;
-                                break;
-                        }
-                    }
+                    await UpdateStudent(studentManager);
                     break;
                 case 3:
-                    int removestudentID;
-                    Console.WriteLine("输入要移除的学生ID");
-                    removestudentID = int.Parse(Console.ReadLine());
-                    studentManager.RemoveStudent(removestudentID);
+                    RemoveStudent(studentManager);
                     break;
                 case 4:
                     studentManager.PrintAllStudents();
@@ -99,6 +41,75 @@ class Program
                     break;
             }
         }
+    }
+
+    static void AddStudent(StudentManager studentManager)
+    {
+        Student newStudent = new Student();
+
+        Console.WriteLine("输入新学生的ID:");
+        if (!int.TryParse(Console.ReadLine(), out int newStudentID)) { Console.WriteLine("Invalid ID!"); return; }
+        newStudent.ID = newStudentID;
+        Console.WriteLine("输入新学生的姓名:");
+        string? nameinput = Console.ReadLine();
+        if (string.IsNullOrEmpty(nameinput)) { Console.WriteLine("Invalid Name!"); return; }
+        newStudent.Name = nameinput;
+        Console.WriteLine("输入新学生的年龄:");
+        if (!int.TryParse(Console.ReadLine(), out int newStudentAge)) { Console.WriteLine("Invalid Age!"); return; }
+        newStudent.Age = newStudentAge;
+        Console.WriteLine("输入新学生的成绩:");
+        string? gradeinput = Console.ReadLine();
+        if (string.IsNullOrEmpty(gradeinput)) { Console.WriteLine("Invalid Grade!"); return; }
+        newStudent.Grade = gradeinput;
+
+        studentManager.AddStudent(newStudent);
+    }
+
+    static async Task UpdateStudent(StudentManager studentManager)
+    {
+        Console.WriteLine("输入要更新的学生ID:");
+        if (!int.TryParse(Console.ReadLine(), out int updateId)) { Console.WriteLine("无效的ID"); return; }
+        Student student = studentManager.GetStudents().Find(s => s.ID == updateId);
+        if (student == null) { Console.WriteLine("没有找到学生"); return; }
+        int flagforupdate = 1;
+        while (flagforupdate != 0)
+        {
+            Console.WriteLine("1：更新学生姓名；2：更新学生年龄；3：更新学生成绩；0：退出");
+            if (!int.TryParse(Console.ReadLine(), out flagforupdate) || flagforupdate < 0 || flagforupdate > 3)
+            {
+                Console.WriteLine("无效的输入，请输入数字0-3");
+                continue;
+            }
+            switch (flagforupdate)
+            {
+                case 1:
+                    Console.WriteLine("输入修改后的学生姓名:");
+                    student.Name = Console.ReadLine();
+                    await studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
+                    break;
+                case 2:
+                    Console.WriteLine("输入修改后的学生年龄:");
+                    student.Age = int.Parse(Console.ReadLine());
+                    await studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
+                    break;
+                case 3:
+                    Console.WriteLine("输入修改后的学生成绩:");
+                    student.Grade = Console.ReadLine();
+                    await studentManager.UpdateStudent(student.ID, student.Name, student.Age, student.Grade);
+                    break;
+                default:
+                    Console.WriteLine("更新系统已退出");
+                    flagforupdate = 0;
+                    break;
+            }
+        }
+    }
+
+    static void RemoveStudent(StudentManager studentManager)
+    {
+        Console.WriteLine("输入要移除的学生ID:");
+        if (!int.TryParse(Console.ReadLine(), out int removeId)) { Console.WriteLine("无效的ID"); return; }
+        studentManager.RemoveStudent(removeId);
     }
 
     //StudentAdded 事件只是打印了一条消息

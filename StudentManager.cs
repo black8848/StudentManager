@@ -13,8 +13,10 @@ namespace StudentManagerNamespace
         private const string FilePath = "students.json";
         private List<Student> Students = new List<Student>();
 
-        public delegate Task StudentChangedHandler();  //定义学生改变委托
-        public event StudentChangedHandler StudentChanged; //事件在学生数据变化时触发
+        //public delegate Task StudentChangedHandler();  //定义学生改变委托
+        //public event StudentChangedHandler StudentChanged; //事件在学生数据变化时触发
+
+        public event Func<Task> StudentChanged;
 
         public delegate void StudentAddedHandler(Student student); //定义学生添加委托
         public event StudentAddedHandler StudentAdded;  //事件在添加学生时触发
@@ -39,17 +41,28 @@ namespace StudentManagerNamespace
         public StudentManager()
         {
             // 程序启动时，异步加载数据
-            LoadFromJsonAsync();
+            Task.Run(async () => await LoadFromJsonAsync()).Wait();
 
             // 监听 StudentChanged 事件，自动异步保存
             StudentChanged += async () => await SaveToJsonAsync();
+        }
+
+        private async Task OnStudentChangedAsync()
+        {
+            if (StudentChanged != null)
+            {
+                foreach (var handler in StudentChanged.GetInvocationList().Cast<Func<Task>>())
+                {
+                    await handler();
+                }
+            }
         }
 
         public void AddStudent(Student student)
         {
             Students.Add(student);
             StudentAdded?.Invoke(student);  //触发事件（通知所有订阅者）
-            StudentChanged?.Invoke(); //触发事件（通知所有订阅者）
+            _ = OnStudentChangedAsync(); //触发事件（通知所有订阅者），使用异步触发事件
         }
 
         public void RemoveStudent(int id)
@@ -59,7 +72,7 @@ namespace StudentManagerNamespace
             {
                 Students.Remove(student);
                 Console.WriteLine($"学生ID： {id}(姓名{student.Name}, 成绩{student.Grade}) 已被移除");
-                StudentChanged?.Invoke();//触发事件（通知所有订阅者）
+                _ = OnStudentChangedAsync();//触发事件（通知所有订阅者）
             }
             else
             {
@@ -67,7 +80,7 @@ namespace StudentManagerNamespace
             }
         }
 
-        public void UpdateStudent(int id, string name, int age, string grade)
+        public async Task UpdateStudent(int id, string name, int age, string grade)
         {
             Student student = Students.Find(s => s.ID == id);
             if (student != null)
@@ -76,7 +89,7 @@ namespace StudentManagerNamespace
                 student.Age = age;
                 student.Grade = grade;
                 Console.WriteLine("学生信息更新成功");
-                StudentChanged?.Invoke();//触发事件（通知所有订阅者）
+                await OnStudentChangedAsync();//触发事件（通知所有订阅者）
             }
             else
             {
@@ -93,7 +106,7 @@ namespace StudentManagerNamespace
         {
             if (Students.Count == 0)
             {
-                Console.WriteLine("学生不存在");
+                Console.WriteLine("暂无学生信息");
                 return;
             }
             foreach (Student student in Students)
@@ -132,7 +145,7 @@ namespace StudentManagerNamespace
             }
         }
 
-        public async void LoadFromJsonAsync()
+        public async Task LoadFromJsonAsync()
         {
             if (File.Exists(FilePath))
             {
