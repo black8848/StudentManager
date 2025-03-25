@@ -1,0 +1,14 @@
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\bin\Debug\net8.0\StudentManager.exe
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\bin\Debug\net8.0\StudentManager.deps.json
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\bin\Debug\net8.0\StudentManager.runtimeconfig.json
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\bin\Debug\net8.0\StudentManager.dll
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\bin\Debug\net8.0\StudentManager.pdb
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\obj\Debug\net8.0\StudentManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\obj\Debug\net8.0\StudentManager.AssemblyInfoInputs.cache
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\obj\Debug\net8.0\StudentManager.AssemblyInfo.cs
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\obj\Debug\net8.0\StudentManager.csproj.CoreCompileInputs.cache
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\obj\Debug\net8.0\StudentManager.dll
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\obj\Debug\net8.0\refint\StudentManager.dll
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\obj\Debug\net8.0\StudentManager.pdb
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\obj\Debug\net8.0\StudentManager.genruntimeconfig.cache
+C:\Users\fuzix\source\repos\StudentManager\StudentManager\obj\Debug\net8.0\ref\StudentManager.dll
