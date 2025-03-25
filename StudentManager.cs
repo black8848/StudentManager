@@ -2,6 +2,9 @@
 using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Xml;
+using Newtonsoft.Json;
 
 namespace StudentManagerNamespace
 {
@@ -9,8 +12,11 @@ namespace StudentManagerNamespace
     {
         private const string FilePath = "students.json";
         private List<Student> Students = new List<Student>();
-        public delegate void StudentAddedHandler(Student student); //定义委托
-        public event StudentAddedHandler StudentAdded;  //定义事件
+        public delegate void StudentChangedHandler();  //定义学生改变委托
+        public delegate void StudentAddedHandler(Student student); //定义学生添加委托
+        public event StudentChangedHandler StudentChanged; //事件在学生数据变化时触发
+        public event StudentAddedHandler StudentAdded;  //事件在添加学生时触发
+
 
         public Student this[int index]
         {
@@ -28,16 +34,13 @@ namespace StudentManagerNamespace
             }
         }
 
-        public StudentManager()
-        {
-            Students = LoadStudents();
-        }
+        public StudentManager() { }
 
         public void AddStudent(Student student)
         {
             Students.Add(student);
-            SaveStudents();
             StudentAdded?.Invoke(student);  //触发事件（通知所有订阅者）
+            StudentChanged?.Invoke(); //触发事件（通知所有订阅者）
         }
 
         public void RemoveStudent(int id)
@@ -46,8 +49,8 @@ namespace StudentManagerNamespace
             if (student != null)
             {
                 Students.Remove(student);
-                SaveStudents();
                 Console.WriteLine($"Student {id} removed.");
+                StudentChanged?.Invoke();//触发事件（通知所有订阅者）
             }
             else
             {
@@ -63,8 +66,8 @@ namespace StudentManagerNamespace
                 student.Name = name;
                 student.Age = age;
                 student.Grade = grade;
-                SaveStudents();
                 Console.WriteLine("Student updated successfully.");
+                StudentChanged?.Invoke();//触发事件（通知所有订阅者）
             }
             else
             {
@@ -90,20 +93,20 @@ namespace StudentManagerNamespace
             }
         }
 
-        private void SaveStudents()
+        public void SaveToJson()
         {
-            string json = JsonSerializer.Serialize(Students, new JsonSerializerOptions { WriteIndented = true });
+            string json = JsonConvert.SerializeObject(Students, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(FilePath, json);
+            Console.WriteLine("(事件订阅)数据已自动保存到 JSON 文件！");
         }
 
-        private List<Student> LoadStudents()
+        public void LoadFromJson()
         {
             if (File.Exists(FilePath))
             {
                 string json = File.ReadAllText(FilePath);
-                return JsonSerializer.Deserialize<List<Student>>(json) ?? new List<Student>();
+                Students = JsonConvert.DeserializeObject<List<Student>>(json) ?? new List<Student>();
             }
-            return new List<Student>();
         }
 
     }

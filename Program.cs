@@ -7,8 +7,11 @@ class Program
     static void Main(string[] args)
     {
         StudentManager studentManager = new StudentManager();
+        studentManager.LoadFromJson(); //自动加载数据
 
         studentManager.StudentAdded += OnStudentAdded;  // 订阅 StudentAdded 事件
+
+        studentManager.StudentChanged += studentManager.SaveToJson;
 
         while (true)
         {
@@ -99,9 +102,12 @@ class Program
         }
     }
 
+    //StudentAdded 事件只是打印了一条消息
+    //但事件订阅真正的价值在于它能让外部代码“监听”特定操作的发生，并做出响应。
+    //在数据持久化的场景下，事件可以触发自动保存功能，让系统变得更智能。
     static void OnStudentAdded(Student student) // 事件回调方法
     {
-        Console.WriteLine($"新学生已添加: {student.Name}, ID: {student.ID}");
+        Console.WriteLine($"(事件订阅)新学生已添加: {student.Name}, ID: {student.ID}");
     }
 
 }
