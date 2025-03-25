@@ -7,11 +7,10 @@ class Program
     static void Main(string[] args)
     {
         StudentManager studentManager = new StudentManager();
-        studentManager.LoadFromJson(); //自动加载数据
 
         studentManager.StudentAdded += OnStudentAdded;  // 订阅 StudentAdded 事件
 
-        studentManager.StudentChanged += studentManager.SaveToJson;
+        studentManager.StudentChanged += studentManager.SaveToJsonAsync;
 
         while (true)
         {
